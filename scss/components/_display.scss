@@ -1,0 +1,10 @@
+.display {
+  width: 100%;
+  height: 150px;
+  @include flexPosition(flex-end, flex-end);
+  flex-direction: column;
+  padding: 20px;
+  &-result {
+    font-size: 50px;
+  }
+}

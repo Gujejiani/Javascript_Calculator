@@ -1,0 +1,12 @@
+$colors: (
+  primary: #e6e6e6,
+  seoncdary: #f0f0f0,
+  white: #fff,
+  button: #8abae0,
+  text: #333,
+  activ: #cabdbd,
+);
+
+@function color($name) {
+  @return map-get($colors, $name);
+}
