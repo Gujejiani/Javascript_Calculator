@@ -6,6 +6,8 @@ $colors: (
   text: #333,
   activ: #cabdbd,
 );
+$main: #010101;
+$buttons: #f97536;
 
 @function color($name) {
   @return map-get($colors, $name);

@@ -18,7 +18,8 @@ body {
   height: 70px;
   font-size: 20px;
   outline: none;
-  border: 1px solid #cabdbd;
+  border: 0.1px solid #e6e6e6;
+  color: #333;
   cursor: pointer;
   background-color: #fff; }
   .btn:hover {
@@ -42,6 +43,9 @@ body {
   position: relative;
   bottom: 10px;
   right: 4px; }
+
+img {
+  color: red !important; }
 
 .display {
   width: 100%;

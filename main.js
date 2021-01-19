@@ -1,80 +1,108 @@
 const buttons = document.querySelectorAll(".btn");
-
 const prevDisplay = document.querySelector(".display-previousNum");
 const mainDisplay = document.querySelector(".display-result");
 
 let firstVal = "";
 let secondVal = "";
-let operation, result, Reset, firstValueAdded;
+let operation, result, Reset, firstValueAdded, squared;
 
 buttons.forEach((button) => {
-  button.addEventListener("click", function (e) {
-    const oper = e.target.value;
-    let val = Number(e.target.value);
-    if (oper === ".") {
-      val = oper;
-    }
-
-    operationClickedHandler(oper);
-
-    //if value is number and operation does not clicked yet
-    if ((val || val === 0) && !operation) {
-      if (Reset) {
-        console.log("Reseted");
-        newOperation();
-        result = undefined;
-      }
-      //geting first  value
-      firstVal += e.target.value;
-      zeroCheckValidator(firstVal, "first");
-      mainDisplay.innerHTML = firstVal;
-    }
-
-    //second operator
-    if (operation && (val || val === 0)) {
-      secondVal += val;
-      zeroCheckValidator(secondVal);
-      mainDisplay.innerHTML = secondVal;
-      console.log("second operation ");
-    }
-
-    //reset
-    if (oper === "reset") {
-      resetAll();
-    }
-    //DELETE
-    if (oper === "delete") {
-      if (!firstValueAdded) {
-        deleteOperation(firstVal, "first");
-      } else {
-        deleteOperation(secondVal, "sec");
-      }
-    }
-    //square
-    if (oper === "square") {
-      square(firstVal);
-    }
-    if (oper === "%") {
-      if (!firstVal) {
-        firstVal = "0";
-        prevDisplay.innerHTML = "0";
-      } else {
-        percentageCounter(secondVal);
-      }
-    }
-
-    if (e.target.value === "=") {
-      console.log(firstVal, secondVal, operation); // for testing
-    }
-    if (e.target.value === "=" && firstVal && secondVal && operation) {
-      calc(firstVal, secondVal, operation);
-      prevDisplay.innerHTML = `${firstVal} ${operation} ${secondVal} = `;
-
-      operation = undefined;
-      Reset = true; //to reset secondVal and prevDisplay in next operation
-    }
-  });
+  button.addEventListener("click", calculationStarted);
+  button.addEventListener("keydown", calculationStarted);
 });
+
+function calculationStarted(e) {
+  e.preventDefault();
+  let oper = e.target.value;
+  let val = Number(e.target.value);
+  if (e.key) {
+    oper = e.key;
+    val = Number(e.key);
+  }
+  console.log(val, oper);
+
+  if (oper === ".") {
+    val = oper;
+  }
+
+  operationClickedHandler(oper);
+
+  //if value is number and operation does not clicked yet
+  if ((val || val === 0) && !operation) {
+    if (Reset) {
+      console.log("Reseted");
+      newOperation();
+      result = undefined;
+    }
+    //geting first  value
+    firstVal += oper;
+    zeroCheckValidator(firstVal, "first");
+    mainDisplay.innerHTML = firstVal;
+  }
+
+  //second operator
+  if (operation && (val || val === 0)) {
+    secondVal += val;
+    zeroCheckValidator(secondVal);
+    mainDisplay.innerHTML = secondVal;
+    console.log("second operation ");
+  }
+
+  //reset
+  if (oper === "resetAll") {
+    console.log(oper, "reseted oper");
+    resetAll();
+  }
+
+  if (oper === "delete" || oper === "Backspace") {
+    if (result) {
+      firstVal = result;
+      firstValueAdded = true;
+      secondVal = "";
+      prevDisplay.innerHTML = "";
+    } else if (!firstValueAdded) {
+      deleteOperation(firstVal, "first");
+    } else {
+      deleteOperation(secondVal, "sec");
+    }
+  }
+  //square
+  if (oper === "square") {
+    square(firstVal, secondVal);
+  }
+  if (oper === "%") {
+    if (!firstVal) {
+      firstVal = "0";
+      prevDisplay.innerHTML = "0";
+    } else {
+      percentageCounter(secondVal);
+    }
+  }
+
+  if (
+    (oper === "=" || oper === "Enter") &&
+    firstVal &&
+    secondVal &&
+    operation
+  ) {
+    calc(firstVal, secondVal, operation);
+    firstValueAdded = false;
+
+    if (squared) {
+      // to display correct prevDisplay on when secold val squared
+      prevDisplay.innerHTML = `${firstVal} ${operation} sqr(${secondVal})=`;
+      squared = false;
+      operation = false;
+    } else {
+      prevDisplay.innerHTML = `${firstVal} ${operation} ${secondVal} = `;
+    }
+
+    operation = undefined;
+    Reset = true; //to reset secondVal and prevDisplay in next operation
+  }
+  console.log(firstVal, operation, secondVal); // for testing
+}
+
 function calc(first, second, operation) {
   let firstV = Number(first);
   let secondV = Number(second);
@@ -117,9 +145,9 @@ function resetAll() {
   secondVal = "";
   prevDisplay.innerHTML = "";
   mainDisplay.innerHTML = "0";
-  result = undefined;
-  operation = undefined;
-  firstValueAdded = undefined;
+  result = false;
+  operation = false;
+  firstValueAdded = false;
 }
 
 function operationClickedHandler(operator) {
@@ -182,18 +210,31 @@ function deleteOperation(operationOn, operationVal) {
   }
 }
 
-function square(val) {
-  let squared = Number(val);
-  if (!result) {
-    squared = val * val;
-    result = squared;
-    mainDisplay.innerHTML = squared;
+function square(val, secVal) {
+  let toSquare = Number(val);
+
+  //checking if user squares the second number
+  if (!result && operation) {
+    let toSquareSec = Number(secondVal);
+    toSquareSec = toSquareSec * toSquareSec;
+    //stores value to result
+    calc(firstVal, toSquareSec, operation);
+    prevDisplay.innerHTML = `${firstVal} ${operation} sqr(${secVal})`;
+    secondVal = toSquareSec;
+    result = false;
+    mainDisplay.innerHTML = toSquareSec;
+    squared = true;
+  } else if (!result) {
+    console.log("second");
+    toSquare = val * val;
+    result = toSquare;
+    mainDisplay.innerHTML = toSquare;
     prevDisplay.innerHTML = `sqr(${firstVal})`;
   } else {
-    squared = result * result;
-    mainDisplay.innerHTML = squared;
+    toSquare = result * result;
+    mainDisplay.innerHTML = toSquare;
     prevDisplay.innerHTML = `sqr(${result})`;
-    result = squared;
+    result = toSquare;
   }
 }
 
@@ -212,22 +253,29 @@ function zeroCheckValidator(checking, val) {
     splitPopJoin(checkingVal, val);
   }
 }
-
+//to remove last letter from string
 function splitPopJoin(checkingVal, val) {
   //spliting to array
   checkingVal = checkingVal.split("");
 
   //deleting last one
   checkingVal.pop();
-  //joining array with join which gives us a string
+  //joining array with join, which gives us a string
   checkingVal = checkingVal.join("");
   val === "first" ? (firstVal = checkingVal) : (secondVal = checkingVal);
 }
 
 function percentageCounter(perc) {
-  const devided = perc / 100;
-  result = percentageCounter;
-  prevDisplay.innerHTML = `${firstVal} * ${devided}`;
-  secondVal = devided;
-  mainDisplay.innerHTML = secondVal;
+  if (secondVal) {
+    const devided = firstVal * (perc / 100);
+    result = percentageCounter;
+    prevDisplay.innerHTML = `${firstVal} ${operation} ${devided}`;
+    secondVal = devided;
+    mainDisplay.innerHTML = secondVal;
+  } else {
+    console.log("else");
+    firstVal = "";
+    prevDisplay.innerHTML = 0;
+    mainDisplay.innerHTML = 0;
+  }
 }

@@ -2,7 +2,8 @@
   height: 70px;
   font-size: 20px;
   outline: none;
-  border: 1px solid #cabdbd;
+  border: 0.1px solid color(primary);
+  color: color(text);
   cursor: pointer;
   background-color: color(white);
   &:hover {
@@ -12,6 +13,7 @@
     background-color: color(activ);
   }
 }
+
 .moderator {
   background-color: color(seoncdary);
 }
@@ -28,4 +30,8 @@
   position: relative;
   bottom: 10px;
   right: 4px;
+}
+
+img {
+  color: red !important;
 }
