@@ -19,7 +19,6 @@ function calculationStarted(e) {
     oper = e.key;
     val = Number(e.key);
   }
-  console.log(val, oper);
 
   if (oper === ".") {
     val = oper;
@@ -30,7 +29,6 @@ function calculationStarted(e) {
   //if value is number and operation does not clicked yet
   if ((val || val === 0) && !operation) {
     if (Reset) {
-      console.log("Reseted");
       newOperation();
       result = undefined;
     }
@@ -45,12 +43,10 @@ function calculationStarted(e) {
     secondVal += val;
     zeroCheckValidator(secondVal);
     mainDisplay.innerHTML = secondVal;
-    console.log("second operation ");
   }
 
   //reset
   if (oper === "resetAll") {
-    console.log(oper, "reseted oper");
     resetAll();
   }
 
@@ -100,7 +96,6 @@ function calculationStarted(e) {
     operation = undefined;
     Reset = true; //to reset secondVal and prevDisplay in next operation
   }
-  console.log(firstVal, operation, secondVal); // for testing
 }
 
 function calc(first, second, operation) {
@@ -125,7 +120,6 @@ function calc(first, second, operation) {
         mainDisplay.innerHTML = result.toFixed(2);
         break;
       default:
-        console.log("error");
         break;
     }
   }
@@ -225,7 +219,6 @@ function square(val, secVal) {
     mainDisplay.innerHTML = toSquareSec;
     squared = true;
   } else if (!result) {
-    console.log("second");
     toSquare = val * val;
     result = toSquare;
     mainDisplay.innerHTML = toSquare;
@@ -247,7 +240,6 @@ function zeroCheckValidator(checking, val) {
   }
   if (checking[0] === ".") {
     firstVal = "0.";
-    console.log("sdd");
   }
   if (checking.indexOf(".") !== checking.lastIndexOf(".")) {
     splitPopJoin(checkingVal, val);
@@ -273,7 +265,6 @@ function percentageCounter(perc) {
     secondVal = devided;
     mainDisplay.innerHTML = secondVal;
   } else {
-    console.log("else");
     firstVal = "";
     prevDisplay.innerHTML = 0;
     mainDisplay.innerHTML = 0;
